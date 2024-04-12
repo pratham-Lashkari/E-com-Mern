@@ -32,7 +32,7 @@ export default function Header() {
              </div>
           </dialog>
           </>
-        ):<Link to={"/login"}><FaSignInAlt/></Link>
+        ):<Link to={"/login"} onClick={()=>(console.log("Login"))} ><FaSignInAlt/></Link>
       }
     </nav>
   )

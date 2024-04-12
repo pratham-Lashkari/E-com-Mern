@@ -25,7 +25,7 @@ const TransactionManagement = lazy(
   () => import("./pages/admin/management/transactionmanagement")
 );
 const Shipping = lazy(() => import("./pages/Shipping"));
-
+const Login = lazy(() => import("./pages/Login"));
 
 function App() {
 
@@ -37,7 +37,8 @@ function App() {
       <Route path="/Cart"element={<Cart/>} / >
       <Route path="/Search"element={<Search/>} / >
 
-
+       {/* Not logged in route */}
+        <Route path="/login" element={<Login/>}></Route>
         {/* logged in users */}
         <Route>
         <Route path="/Shipping"element={<Shipping/>} / >

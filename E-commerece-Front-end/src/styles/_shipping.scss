@@ -38,8 +38,10 @@
       padding: 1rem;
       outline: none;
       font-size: 1.05rem;
-
       border-radius: 5px;
+    }
+    >button{
+      @include btn(1rem);
     }
   }
  }

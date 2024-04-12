@@ -41,7 +41,14 @@
       border-radius: 5px;
     }
     >button{
-      @include btn(1rem);
+      @include btn(1rem , $color3, $color1);
+      border-radius: 5px;
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      &:hover{
+        opacity: 0.8;
+      }
     }
   }
  }

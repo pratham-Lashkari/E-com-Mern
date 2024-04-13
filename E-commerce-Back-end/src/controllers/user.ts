@@ -1,12 +1,13 @@
 import { NextFunction , Request , Response } from "express";
 import { NewUsertype } from "../types/user.js";
 import { User } from "../models/user.js";
+import ErrorHandler from "../utils/utitlity-class.js";
 
 export const newUser =  async( 
   req : Request<{},{},NewUsertype> , 
   res :Response , 
   next:NextFunction)=>{
-
+   return next( new ErrorHandler("Controler ka eeroor" , 400));
    try {
     const {_id ,name ,email ,dob ,gender ,photo  } = req.body;
     console.log(_id , name , email , gender , dob , photo);

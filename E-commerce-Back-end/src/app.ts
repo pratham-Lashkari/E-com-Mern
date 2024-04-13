@@ -1,6 +1,7 @@
 import express from "express";
 import { connetToDb } from "./Db/database.js";
 import userRoutes from "./routes/user.js";
+import { errorMiddleweare } from "./middlewares/error.js";
 const port = 4000;
 const app = express();
 
@@ -15,6 +16,8 @@ app.get("/",(req,res)=>{
     message : "hello vaishali"
   })
 })
+
+app.use(errorMiddleweare);
 
 app.listen(port , ()=>{
   console.log(`Express is working on http://localhost:${port}`);

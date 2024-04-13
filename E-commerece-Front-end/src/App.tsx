@@ -26,6 +26,7 @@ const TransactionManagement = lazy(
 );
 const Shipping = lazy(() => import("./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login"));
+const Order = lazy(() => import("./pages/Order"));
 
 function App() {
 
@@ -42,6 +43,7 @@ function App() {
         {/* logged in users */}
         <Route>
         <Route path="/Shipping"element={<Shipping/>} / >
+        <Route path="/Orders"element={<Order/>} / >
         </Route>
         {/* Admin routes */}
         {/* <Route

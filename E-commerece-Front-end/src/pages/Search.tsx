@@ -85,7 +85,7 @@ export default function Search() {
 
             <button  
             disabled={!isNextPage} 
-            onClick={()=>(setPage(()=>page+1))}
+            onClick={()=>(setPage((prev)=>prev+1))}
             >Next</button>
        
          </article>

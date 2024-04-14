@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, VirtualType } from "mongoose";
 import validator from "validator"
 
  interface Iuser extends Document{
@@ -48,7 +48,6 @@ const schema = new Schema(
     type : Date,
     required : [true , "Please enter date of birth"]
    }
-
 }
 ,{
   timestamps : true,

@@ -9,6 +9,14 @@ export interface NewUsertype{
   photo : string;
   role : string;
 }
+export interface NewProducttype{
+  name : string;
+  category : string;
+  price : number;
+  photo : string;
+  stock : number;
+}
+
 
 export type ControllerType = (
   req: Request,

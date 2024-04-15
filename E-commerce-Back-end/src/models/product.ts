@@ -5,6 +5,7 @@ type ProductType ={
  photo : string;
  stock : number;
  category : string;
+ price : number;
 }
 const schema = new mongoose.Schema({
 
@@ -20,10 +21,19 @@ const schema = new mongoose.Schema({
     type :Number,
     required :[true,"Please enter stock"]
   },
+  price:{
+    type :Number,
+    required :[true,"Please enter price"]
+  },
   category:{
     type : String,
-    required :[true,"Please enter category"]
+    required :[true,"Please enter category"],
+    trim:true
   }
+}
+,
+{
+  timestamps:true,
 });
 
 export const Product = mongoose.model<ProductType>("Product",schema);

@@ -44,3 +44,9 @@ export type BaseQuery = {
   },
   category?:string;
 }
+
+export type InvalidateCacheType = {
+  product?:boolean;
+  admin?:boolean;
+  order?:boolean;
+}

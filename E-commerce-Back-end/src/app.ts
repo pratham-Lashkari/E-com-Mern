@@ -1,14 +1,15 @@
 import express from "express";
 import { connetToDb } from "./Db/database.js";
 import { errorMiddleweare } from "./middlewares/error.js";
-
+import NodeCache from "node-cache";
 // importing routes
+import productRoutes from "./routes/product.js";
 import userRoutes from "./routes/user.js";
-import productRoutes from "./routes/product.js"
-import bodyParser from "body-parser";
 
 const port = 4000;
 const app = express();
+
+export const myCache = new NodeCache();
 
 connetToDb();
 app.use(express.json());

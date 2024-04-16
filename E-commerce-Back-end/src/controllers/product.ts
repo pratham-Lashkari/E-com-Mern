@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { TryCatch } from "../middlewares/error.js";
-import { NewProducttype } from "../types/user.js";
+import { BaseQuery, NewProducttype, SearchTypes } from "../types/user.js";
 import { Product } from "../models/product.js";
 import ErrorHandler from "../utils/utitlity-class.js";
 import { rm } from "fs";
@@ -91,7 +91,6 @@ export const updateProduct =TryCatch(async(req,res,next)=>{
    const {name, stock,category,price} = req.body;
    const photo = req.file;
    const product = await Product.findById(id);
-   console.log(product)
    if(!product)
       {
          return next(new ErrorHandler("Invalid id",404));
@@ -103,12 +102,12 @@ export const updateProduct =TryCatch(async(req,res,next)=>{
          })
          product.photo = photo.path;
       }
-    
+
       if(name) product.name = name;
       if(stock) product.stock = stock;
       if(category) product.category = category;
       if(price) product.price = price;
-   
+      
     await product.save();
 
    return res.status(200).send({
@@ -136,4 +135,41 @@ export const deleteProduct =TryCatch(async(req,res,next)=>{
     success : true,
     message :"Product delted successfully"
    })
+});
+
+
+
+
+export const serarchAllFilters = TryCatch(async(req:Request<{},{},{},SearchTypes>,res,next)=>{
+     
+     const {search , category , price , sort } = req.query;
+     const page = Number(req.query.page);
+     const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
+     const skip = (page - 1) * limit;
+
+      const baseQuery : BaseQuery ={};
+      if(search)
+         {
+            baseQuery.name = {
+               $regex : search,
+               $option : "i"
+            };
+         }
+         if(price)
+            {
+               baseQuery.price = {
+                  $lte:Number(price)
+               }
+            }
+    const product = await Product.find();
+
+
+    if(!product)
+      {
+         return next(new ErrorHandler("Empty stock" , 404));
+      }
+      return res.status(200).send({
+         success : true,
+         product
+      })
 });

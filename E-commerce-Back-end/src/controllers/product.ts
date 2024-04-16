@@ -152,24 +152,48 @@ export const serarchAllFilters = TryCatch(async(req:Request<{},{},{},SearchTypes
          {
             baseQuery.name = {
                $regex : search,
-               $option : "i"
+               $options : "i"
             };
          }
-         if(price)
-            {
-               baseQuery.price = {
-                  $lte:Number(price)
-               }
+      if(price)
+         {
+            baseQuery.price = {
+               $lte:Number(price)
             }
-    const product = await Product.find();
+         }
+      if(category)
+         {
+            baseQuery.category = category;
+         } 
 
+
+      const productPromise = await Product.find(baseQuery).sort(
+          sort && {price:sort==="asc"?1:-1}
+         ).limit(limit).skip(skip);
+
+      const filterProductsPromise = await Product.find(baseQuery);
+
+      const [product,filterProducts] = await Promise.all([productPromise,filterProductsPromise]);
+      
+
+      /*
+    const product = await Product.find(baseQuery).sort(
+      sort && {price:sort==="asc"?1:-1}
+    ).limit(limit).skip(skip);
+
+    const filterProducts = await Product.find(baseQuery);
+    */
 
     if(!product)
       {
          return next(new ErrorHandler("Empty stock" , 404));
       }
+
+   const totalLength = Math.ceil(filterProducts.length/limit);
+
       return res.status(200).send({
          success : true,
-         product
+         product,
+         totalLength
       })
 });

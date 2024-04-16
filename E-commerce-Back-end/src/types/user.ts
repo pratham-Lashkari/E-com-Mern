@@ -37,7 +37,7 @@ export type BaseQuery = {
 
   name?:{
       $regex : string;
-      $option:string;
+      $options:string;
   },
   price?:{
     $lte : number;

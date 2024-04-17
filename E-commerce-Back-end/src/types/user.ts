@@ -50,6 +50,7 @@ export type InvalidateCacheType = {
   product?:boolean;
   admin?:boolean;
   order?:boolean;
+  key?:string;
 }
 
 export type OrderItemType = {

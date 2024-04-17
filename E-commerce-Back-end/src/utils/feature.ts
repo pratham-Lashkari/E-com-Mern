@@ -4,7 +4,8 @@ import { InvalidateCacheType, OrderItemType } from "../types/user.js";
 
 export const InvalidateCache =({product,
   order,
-  admin}:InvalidateCacheType)=>{
+  admin,
+  key}:InvalidateCacheType)=>{
 
      if(product)
       {
@@ -12,6 +13,11 @@ export const InvalidateCache =({product,
         "category",
         "latest-Product"]
         myCache.del(prodcutKeys);
+      }
+    if(order)
+      {
+          const orderKeys :string[] = [key!];
+          myCache.del(orderKeys);
       }
 }
 

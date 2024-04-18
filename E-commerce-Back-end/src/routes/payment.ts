@@ -7,6 +7,7 @@ const app = express.Router();
 // For creating a cupon 
 app.post("/coupon/new" , newCupon);
 
+
 // getting discount
 app.get("/discount",adminOnly ,applyDiscount);
 
@@ -14,6 +15,5 @@ app.get("/discount",adminOnly ,applyDiscount);
 app.get("/all/cupons" , adminOnly , getAllCupons);
 
 app.delete("/cupon/:id" , adminOnly , deleteCupon);
-
 
 export default app;

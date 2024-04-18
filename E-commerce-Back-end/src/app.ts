@@ -8,6 +8,7 @@ import morgan from "morgan";
 import productRoutes from "./routes/product.js";
 import userRoutes from "./routes/user.js";
 import orderRoutes from "./routes/order.js";
+import paymentRoutes from "./routes/payment.js";
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/uploads" , express.static("uploads"));
 app.use("/api/v1/user",userRoutes);
 app.use("/api/v1/product" , productRoutes);
 app.use("/api/v1/order" ,orderRoutes );
+app.use("/api/v1/payment" ,paymentRoutes);
 
 
 app.get("/",(req,res)=>{

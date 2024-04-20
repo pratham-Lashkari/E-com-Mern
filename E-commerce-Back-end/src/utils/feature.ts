@@ -19,7 +19,7 @@ export const InvalidateCache =({product,
           const orderKeys :string[] = [key!];
           myCache.del(orderKeys);
       }
-}
+};
 
 export const reducedStock =  async(orderItems:OrderItemType[])=>{
 
@@ -34,5 +34,16 @@ export const reducedStock =  async(orderItems:OrderItemType[])=>{
         product.stock -= order.quantity;
         await product.save();
     }
+};
 
-}
+
+export const calculatePercentage =(thisMonth:number , lastMonth:number)=>{
+
+  if(lastMonth === 0)
+    {
+      return thisMonth*100;
+    }
+  
+  const percent = ((thisMonth - lastMonth) / lastMonth) * 100;
+  return percent.toFixed(0);
+};

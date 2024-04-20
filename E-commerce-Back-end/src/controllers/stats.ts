@@ -202,10 +202,18 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
   }
   else{
 
-    const [processingOrder , shippingOrder , deliveredOrder] = await Promise.all([
+    const [processingOrder , 
+      shippingOrder , 
+      deliveredOrder, 
+      categories, 
+      productCount ,
+      productOutOfStocks] = await Promise.all([
       Order.countDocuments({status : "Processing"}),
       Order.countDocuments({status : "Shipped"}),
       Order.countDocuments({status : "Delivered"}),
+      Product.distinct("category"),
+      Product.countDocuments(),
+      Product.countDocuments({stock : 0})
     ]);
 
     const orderFullFillmentRation = {
@@ -213,9 +221,19 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
       shipped  : shippingOrder,
       delivered : deliveredOrder  
     };
+    const productCategories :Record<string,number>[] = await getInventoryCount({
+      categories,
+      productCount
+    });
+    const stockAvaliablity = {
+      inStock : productCount - productOutOfStocks,
+      outStock :  productOutOfStocks
+    }
 
     charts = {
-      orderFullFillmentRation
+      orderFullFillmentRation,
+      productCategories,
+      stockAvaliablity
     }
 
     myCache.set("admin-pie-charts" , JSON.stringify(charts));

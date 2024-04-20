@@ -3,7 +3,7 @@ import { TryCatch } from "../middlewares/error.js";
 import { Order } from "../models/order.js";
 import { Product } from "../models/product.js";
 import { User } from "../models/user.js";
-import { calculatePercentage } from "../utils/feature.js";
+import { calculatePercentage, getInventoryCount } from "../utils/feature.js";
 
 export const getDashboardStats = TryCatch(async(req,res,next)=>{
 
@@ -151,17 +151,11 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
               }
          });
 
-          // Categories count and theri items for inventry
-         const categoryPromise = categories.map((category)=>Product.countDocuments({category}));
-         const categoriesCount = await Promise.all(categoryPromise);
-         const categoryCount:Record<string,number>[] = [];
-
-          categories.forEach((category,i)=>
-          {
-            categoryCount.push({
-                [category] :Math.round(( categoriesCount[i] / productCount) *100),
-              });
-          });
+        // Categories count and theri items for inventry
+        const categoryCount :Record<string,number>[] = await getInventoryCount({
+          categories,
+          productCount
+        });
 
           // For gender ratio
           const userRatio = {
@@ -175,7 +169,7 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
             amount : i.total,
             quality : i.orderItems.length,
             status : i.status 
-          }))
+          }));
 
       stats = {
         categoryCount,
@@ -189,7 +183,7 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
         modifiedLatestTransaction
       };
 
-        myCache.set("admin-stats" , JSON.stringify(stats));
+      myCache.set("admin-stats" , JSON.stringify(stats));
 
     }
     return res.status(200).json({
@@ -220,8 +214,6 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
       delivered : deliveredOrder  
     };
 
-
-    
     charts = {
       orderFullFillmentRation
     }

@@ -200,6 +200,40 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
 
 export const getPieCharts = TryCatch(async(req,res,next)=>{
   
+  let charts;
+
+  if(myCache.has("admin-pie-charts"))
+  {
+      charts = JSON.parse(myCache.get("admin-pie-charts") as string);
+  }
+  else{
+
+    const [processingOrder , shippingOrder , deliveredOrder] = await Promise.all([
+      Order.countDocuments({status : "Processing"}),
+      Order.countDocuments({status : "Shipped"}),
+      Order.countDocuments({status : "Delivered"}),
+    ]);
+
+    const orderFullFillmentRation = {
+      processing : processingOrder,
+      shipped  : shippingOrder,
+      delivered : deliveredOrder  
+    };
+
+
+    
+    charts = {
+      orderFullFillmentRation
+    }
+
+    myCache.set("admin-pie-charts" , JSON.stringify(charts));
+
+  }
+    return res.status(200).json({
+      success : true,
+      charts
+    }); 
+
 });
 
 

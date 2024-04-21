@@ -3,8 +3,7 @@ import { TryCatch } from "../middlewares/error.js";
 import { Order } from "../models/order.js";
 import { Product } from "../models/product.js";
 import { User } from "../models/user.js";
-import { calculatePercentage, getInventoryCount } from "../utils/feature.js";
-import { allOrder } from "./order.js";
+import { calculatePercentage, getChartsData, getInventoryCount } from "../utils/feature.js";
 
 export const getDashboardStats = TryCatch(async(req,res,next)=>{
 
@@ -303,6 +302,64 @@ export const getBarCharts = TryCatch(async(req,res,next)=>{
   
   let key = "admin-bar-charts";
   let charts;
+
+  if(myCache.has(key))
+  {
+    charts =JSON.parse(myCache.get(key) as string);
+  }
+  else{
+
+    const today = new Date();
+    const sixMonthAgo = new Date();
+    sixMonthAgo.setMonth(sixMonthAgo.getMonth()-6);
+
+    const tweleveMonthAgo = new Date();
+    tweleveMonthAgo.setMonth(tweleveMonthAgo.getMonth()-12);
+
+    const sixMonthProductPromise = Product.find({
+      createdAt:{
+        $gte : sixMonthAgo,
+        $lte : today
+      }
+    }).select("createdAt");
+  
+    const sixMonthUserPromise = User.find({
+      createdAt:{
+        $gte : sixMonthAgo,
+        $lte : today
+      }
+    }).select("createdAt");
+
+    const twelveMonthOrderPromise =  Order.find({
+      createdAt:{
+        $gte : tweleveMonthAgo,
+        $lte : today
+      }
+    }).select("createdAt");
+
+    const [users , products , orders] = await Promise.all([
+      sixMonthUserPromise,
+      sixMonthProductPromise,
+      twelveMonthOrderPromise
+    ]);
+
+    const ordersCounts = getChartsData({length : 12 , docArr : orders , today});
+    const userCounts = getChartsData({length : 6 , docArr : users , today});
+    const productsCounts = getChartsData({length : 6 , docArr : products , today});
+
+    charts = {
+      users : userCounts,
+      products : productsCounts,
+      orders : ordersCounts
+    }
+    myCache.set(key , JSON.stringify(key));
+  }
+
+  return res.status(200).send({
+    success : true,
+    charts
+  })
+
 });
 
 export const getLineCharts = TryCatch(async(req,res,next)=>{

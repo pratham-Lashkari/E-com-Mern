@@ -4,6 +4,7 @@ import { Order } from "../models/order.js";
 import { Product } from "../models/product.js";
 import { User } from "../models/user.js";
 import { calculatePercentage, getInventoryCount } from "../utils/feature.js";
+import { allOrder } from "./order.js";
 
 export const getDashboardStats = TryCatch(async(req,res,next)=>{
 
@@ -202,18 +203,34 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
   }
   else{
 
+    const allOrderPromise = Order.find({}).select([
+    "shippingCharges" , 
+    "total" , 
+    "discount" , 
+    "subtotal" , 
+    "tax"]);
+
     const [processingOrder , 
       shippingOrder , 
       deliveredOrder, 
       categories, 
       productCount ,
-      productOutOfStocks] = await Promise.all([
+      productOutOfStocks,
+      allOrders,
+      allUser,
+      adminUser,
+      customerUser
+      ] = await Promise.all([
       Order.countDocuments({status : "Processing"}),
       Order.countDocuments({status : "Shipped"}),
       Order.countDocuments({status : "Delivered"}),
       Product.distinct("category"),
       Product.countDocuments(),
-      Product.countDocuments({stock : 0})
+      Product.countDocuments({stock : 0}),
+      allOrderPromise,
+      User.find({}).select(["dob"]),
+      User.countDocuments({role : "admin"}),
+      User.countDocuments({role:"user"})
     ]);
 
     const orderFullFillmentRation = {
@@ -228,12 +245,46 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
     const stockAvaliablity = {
       inStock : productCount - productOutOfStocks,
       outStock :  productOutOfStocks
+    };
+
+    const grossIncome = allOrders.reduce((prev,order)=> (prev + (order.total || 0)),0);
+
+    const discount = allOrders.reduce((prev,order)=> prev + (order.discount || 0) , 0);
+
+    const productionCost = allOrders.reduce((prev,order) => prev + (order.shippingCharges || 0),0);
+
+    const burnt = allOrders.reduce((prev,order) => prev + (order.tax || 0),0);
+
+    const marketingCost = Math.round(grossIncome* (30/100));
+
+    const netMargin = grossIncome - discount - productionCost - burnt - marketingCost;
+
+    const revenueDistribution = {
+      netMargin, 
+      discount ,
+      productionCost ,
+      burnt ,
+      marketingCost 
+    };
+
+    const userAgeGroup = {
+      teen : allUser.filter((i)=>i.age < 20).length,
+      adult : allUser.filter((i) => i.age >= 20 && i.age < 40).length,
+      old : allUser.filter((i) => i.age >= 40).length,
+    }
+
+    const adminCustomer = {
+      user : customerUser,
+      admin : adminUser
     }
 
     charts = {
       orderFullFillmentRation,
       productCategories,
-      stockAvaliablity
+      stockAvaliablity,
+      revenueDistribution,
+      adminCustomer,
+      userAgeGroup
     }
 
     myCache.set("admin-pie-charts" , JSON.stringify(charts));

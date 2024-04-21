@@ -9,10 +9,11 @@ import { allOrder } from "./order.js";
 export const getDashboardStats = TryCatch(async(req,res,next)=>{
 
     let stats = {};
+    let key = "admin-stats"
 
-    if(myCache.has("admin-stats"))
+    if(myCache.has(key))
       {
-        stats = JSON.parse(myCache.get("admin-stats") as string);
+        stats = JSON.parse(myCache.get(key) as string);
       }
     else{
       const today = new Date();
@@ -143,7 +144,7 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
 
          lastSixMonthAgo.forEach((order)=>{
             const creationDate = order.createdAt;
-            const monthdiff =  today.getMonth() - creationDate.getMonth();
+            const monthdiff =  (today.getMonth() - creationDate.getMonth() + 12)%12;
 
             if(monthdiff < 6)
               {
@@ -184,7 +185,7 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
         modifiedLatestTransaction
       };
 
-      myCache.set("admin-stats" , JSON.stringify(stats));
+      myCache.set(key , JSON.stringify(stats));
 
     }
     return res.status(200).json({
@@ -196,10 +197,10 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
 export const getPieCharts = TryCatch(async(req,res,next)=>{
   
   let charts;
-
-  if(myCache.has("admin-pie-charts"))
+  let key = "admin-pie-charts";
+  if(myCache.has(key))
   {
-      charts = JSON.parse(myCache.get("admin-pie-charts") as string);
+      charts = JSON.parse(myCache.get(key) as string);
   }
   else{
 
@@ -287,7 +288,7 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
       userAgeGroup
     }
 
-    myCache.set("admin-pie-charts" , JSON.stringify(charts));
+    myCache.set(key , JSON.stringify(charts));
 
   }
     return res.status(200).json({
@@ -300,6 +301,8 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
 
 export const getBarCharts = TryCatch(async(req,res,next)=>{
   
+  let key = "admin-bar-charts";
+  let charts;
 });
 
 export const getLineCharts = TryCatch(async(req,res,next)=>{

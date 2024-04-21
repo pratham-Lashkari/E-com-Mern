@@ -3,10 +3,11 @@ import { TryCatch } from "../middlewares/error.js";
 import { Order } from "../models/order.js";
 import { Product } from "../models/product.js";
 import { User } from "../models/user.js";
-import { calculatePercentage, getChartsData, getInventoryCount } from "../utils/feature.js";
+import { BaseQuery } from "../types/user.js";
+import { InvalidateCache, calculatePercentage, getChartsData, getInventoryCount } from "../utils/feature.js";
 
 export const getDashboardStats = TryCatch(async(req,res,next)=>{
-
+  
     let stats = {};
     let key = "admin-stats"
 
@@ -115,7 +116,6 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
       );
       const revenue = calculatePercentage(thisMonthRevenue , lastMonthRevenue);
       
-     
         const count = {
           revenues,
           user : userCount,
@@ -187,6 +187,8 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
       myCache.set(key , JSON.stringify(stats));
 
     }
+    InvalidateCache({product  : true , admin : true});
+
     return res.status(200).json({
       success : true,
       stats
@@ -248,15 +250,10 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
     };
 
     const grossIncome = allOrders.reduce((prev,order)=> (prev + (order.total || 0)),0);
-
     const discount = allOrders.reduce((prev,order)=> prev + (order.discount || 0) , 0);
-
     const productionCost = allOrders.reduce((prev,order) => prev + (order.shippingCharges || 0),0);
-
     const burnt = allOrders.reduce((prev,order) => prev + (order.tax || 0),0);
-
     const marketingCost = Math.round(grossIncome* (30/100));
-
     const netMargin = grossIncome - discount - productionCost - burnt - marketingCost;
 
     const revenueDistribution = {
@@ -286,10 +283,11 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
       adminCustomer,
       userAgeGroup
     }
-
     myCache.set(key , JSON.stringify(charts));
 
   }
+  InvalidateCache({product  : true , admin : true});
+
     return res.status(200).json({
       success : true,
       charts
@@ -299,7 +297,6 @@ export const getPieCharts = TryCatch(async(req,res,next)=>{
 
 
 export const getBarCharts = TryCatch(async(req,res,next)=>{
-  
   let key = "admin-bar-charts";
   let charts;
 
@@ -308,7 +305,6 @@ export const getBarCharts = TryCatch(async(req,res,next)=>{
     charts =JSON.parse(myCache.get(key) as string);
   }
   else{
-
     const today = new Date();
     const sixMonthAgo = new Date();
     sixMonthAgo.setMonth(sixMonthAgo.getMonth()-6);
@@ -322,7 +318,6 @@ export const getBarCharts = TryCatch(async(req,res,next)=>{
         $lte : today
       }
     }).select("createdAt");
-  
     const sixMonthUserPromise = User.find({
       createdAt:{
         $gte : sixMonthAgo,
@@ -336,7 +331,6 @@ export const getBarCharts = TryCatch(async(req,res,next)=>{
         $lte : today
       }
     }).select("createdAt");
-
     const [users , products , orders] = await Promise.all([
       sixMonthUserPromise,
       sixMonthProductPromise,
@@ -354,14 +348,62 @@ export const getBarCharts = TryCatch(async(req,res,next)=>{
     }
     myCache.set(key , JSON.stringify(key));
   }
+  InvalidateCache({product  : true , admin : true});
 
   return res.status(200).send({
     success : true,
     charts
-  })
-
+  });
 });
 
 export const getLineCharts = TryCatch(async(req,res,next)=>{
   
+  let key = "admin-Line-charts";
+  let charts;
+
+  if(myCache.has(key))
+  {
+    charts =JSON.parse(myCache.get(key) as string);
+  }
+  else{
+
+    const today = new Date();
+    const tweleveMonthAgo = new Date();
+    tweleveMonthAgo.setMonth(tweleveMonthAgo.getMonth()-12);
+
+    const baseQuery = {
+      createdAt:{
+        $gte : tweleveMonthAgo,
+        $lte : today
+      }
+    };
+    const twelveMonthUserPromise =  User.find(baseQuery).select("createdAt");
+    const twelveMonthProductPromise =  Product.find(baseQuery).select("createdAt");
+    const twelveMonthOrderPromise =  Order.find(baseQuery).select(["createdAt" , "discount" , "total"]);
+
+    const [users , products , orders] = await Promise.all([
+      twelveMonthUserPromise,
+      twelveMonthProductPromise,
+      twelveMonthOrderPromise
+    ]);
+
+    const discount = getChartsData({length : 12 , docArr : orders , today, property : "discount"});
+    const revenue = getChartsData({length : 12 , docArr : orders , today, property : "total"});
+    const userCounts = getChartsData({length : 12 , docArr : users , today});
+    const productsCounts = getChartsData({length : 6 , docArr : products , today});
+
+    charts = {
+      users : userCounts,
+      products : productsCounts,
+      discount ,
+      revenue 
+    };
+    myCache.set(key , JSON.stringify(key));
+  }
+  InvalidateCache({product  : true , admin : true});
+
+  return res.status(200).send({
+    success : true,
+    charts
+  });
 });

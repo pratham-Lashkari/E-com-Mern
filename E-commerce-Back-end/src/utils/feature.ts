@@ -20,6 +20,10 @@ export const InvalidateCache =({product,
           const orderKeys :string[] = [key!];
           myCache.del(orderKeys);
       }
+    if(admin)
+      {
+        const adminKeys : string[] = ["admin-stats" , "admin-pie-charts" , "admin-bar-charts", "admin-Line-charts"]
+      }
 };
 
 export const reducedStock =  async(orderItems:OrderItemType[])=>{
@@ -68,15 +72,18 @@ export const getInventoryCount = async ({categories , productCount}:{categories:
 
 
 interface myDocument extends Document {
-  createdAt : Date
+  createdAt : Date,
+  discount? : number
+  total? : number
 }
 type FuncProps = {
   length : number,
   docArr : myDocument[],
-  today : Date
+  today : Date,
+  property? : "discount" | "total"
 };
 
-export const getChartsData = ({length , docArr, today}:FuncProps)=>{
+export const getChartsData = ({length , docArr, today , property}:FuncProps)=>{
 
   const data : number[] = new Array(length).fill(0);
 
@@ -86,7 +93,7 @@ export const getChartsData = ({length , docArr, today}:FuncProps)=>{
 
             if(monthdiff < length)
               {
-                data[6 - monthdiff - 1] += 1;
+                 data[6 - monthdiff - 1] += property ? i[property]! : 1;
               }
          });
     return data;

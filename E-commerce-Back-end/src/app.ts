@@ -10,6 +10,7 @@ import userRoutes from "./routes/user.js";
 import orderRoutes from "./routes/order.js";
 import paymentRoutes from "./routes/payment.js";
 import dashboardRoute from "./routes/stats.js"
+import Stripe from "stripe";
 
 
 const app = express();
@@ -22,6 +23,9 @@ config({
 
 const port = process.env.PORT || 3000;
 const mongoUrl = process.env.MONGO_URI || "";
+const stripKey = process.env.STRIPE_KEY || "";
+
+export const stripe = new Stripe(stripKey);
 
 connetToDb(mongoUrl);
 console.log(morgan("dev"));

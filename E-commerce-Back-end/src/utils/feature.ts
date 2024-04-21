@@ -23,6 +23,7 @@ export const InvalidateCache =({product,
     if(admin)
       {
         const adminKeys : string[] = ["admin-stats" , "admin-pie-charts" , "admin-bar-charts", "admin-Line-charts"]
+        myCache.del(adminKeys)
       }
 };
 

@@ -5,6 +5,7 @@ const Home  = lazy(()=>import("./pages/Home"))
 const Cart  = lazy(()=>import("./pages/Cart"))  
 const Search  = lazy(()=>import("./pages/Search"))  
 import "./styles/app.scss"
+import { Toaster } from "react-hot-toast"
 import Header from "./Component/header";
 // Adming imports
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
@@ -74,9 +75,10 @@ function App() {
 
   </Routes>
   </Suspense>
+  <Toaster position="bottom-center"/>
   </Router>
 
-  )
-}
+  );
+};
 
 export default App

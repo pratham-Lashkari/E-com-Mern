@@ -3,7 +3,7 @@ import { FaSearch, FaShoppingBag, FaSignInAlt, FaSignOutAlt, FaUser } from 'reac
 import { Link } from 'react-router-dom'
 
 
-const user = {_id:"dfd",role:"admin"}
+const user = {_id:"",role:""}
 export default function Header() {
 
   const [isOpen , setisOpen] = useState<boolean>(false);

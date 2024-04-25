@@ -4,6 +4,7 @@ import { errorMiddleweare } from "./middlewares/error.js";
 import NodeCache from "node-cache";
 import { config } from "dotenv";
 import morgan from "morgan";
+import cors from "cors";
 // importing routes
 import productRoutes from "./routes/product.js";
 import userRoutes from "./routes/user.js";
@@ -29,6 +30,7 @@ export const stripe = new Stripe(stripKey);
 
 connetToDb(mongoUrl);
 console.log(morgan("dev"));
+app.use(cors());
 
 app.use(express.json());
 app.use("/uploads" , express.static("uploads"));

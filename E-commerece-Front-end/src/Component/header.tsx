@@ -9,6 +9,7 @@ interface PropType {
 export default function Header({user}:PropType) {
 
   const [isOpen , setisOpen] = useState<boolean>(false);
+
   const logoutHandler =()=>{
     setisOpen(false);
   }
@@ -34,7 +35,7 @@ export default function Header({user}:PropType) {
              </div>
           </dialog>
           </>
-        ):<Link to={"/login"} onClick={()=>(console.log("Login"))} ><FaSignInAlt/></Link>
+        ):<Link to={"/login"} onClick={()=>(console.log(user))} ><FaSignInAlt/></Link>
       }
     </nav>
   )

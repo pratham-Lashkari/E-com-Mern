@@ -10,6 +10,6 @@ app.post("/new",newUser);
 app.get("/all" , adminOnly ,getAllUser);
 
 // Get a single user by id and delete by id
-app.route("/:id").get(adminOnly , getUser).delete(adminOnly , deleteUser);
+app.route("/:id").get(getUser).delete(adminOnly , deleteUser);
 
 export default app;

@@ -5,7 +5,7 @@ export interface NewUsertype{
   _id : string;
   name : string;
   email : string;
-  dob : Date;
+  dob : string;
   gender : string;
   photo : string;
   role : string;

@@ -38,7 +38,7 @@ export const newUser = TryCatch(
        return res.status(200).send({
         success : true,
         message : `Welcome ${name}`
-      })
+      });
 
 });
 

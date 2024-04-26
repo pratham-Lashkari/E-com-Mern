@@ -30,9 +30,9 @@ export const stripe = new Stripe(stripKey);
 
 connetToDb(mongoUrl);
 console.log(morgan("dev"));
-app.use(cors());
 
 app.use(express.json());
+app.use(cors());
 app.use("/uploads" , express.static("uploads"));
 
 

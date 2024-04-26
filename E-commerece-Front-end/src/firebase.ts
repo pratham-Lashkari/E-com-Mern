@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { browserPopupRedirectResolver, browserSessionPersistence, getAuth, initializeAuth } from "firebase/auth";
+import {  getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey:import.meta.env.VITE_FIREBASE_KEY,
@@ -10,10 +10,5 @@ const firebaseConfig = {
   appId:import.meta.env.VITE_APP_ID
 };
 
-
-const app = initializeApp(firebaseConfig);
-
-export const auth = initializeAuth(app, {
-  persistence: browserSessionPersistence,
-  popupRedirectResolver: browserPopupRedirectResolver,
-});
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);

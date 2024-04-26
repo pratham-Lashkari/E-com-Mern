@@ -1,12 +1,48 @@
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
+import { auth } from "../firebase";
+import { useLoginMutation } from "../redux/api/userApi";
+import toast from "react-hot-toast";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
+import { MessageResponse } from "../types/api-types";
 
 export default function Login() {
 
   const [gender , setGender] = useState("");
   const [date , setDate] = useState("");
+  const [login] =  useLoginMutation();
 
-    
+    const loginHandler = async()=>{
+      try {
+         const provider = new GoogleAuthProvider();
+         const {user} =   await signInWithPopup(auth,provider);
+
+         const res = await login({
+          _id : user.uid,
+          name : user.displayName!,
+          photo : user.photoURL!,
+          gender,
+          email : user.email!,
+          role : "User",
+          dob  :date
+         });
+
+         if("data" in res)
+          {
+              toast.success(res.data.message);
+          }
+          else{
+            const error = res.error as FetchBaseQueryError;
+            const {message} = error.data as MessageResponse;
+            toast.error(message);
+          }
+
+      } catch (error) {
+        console.log(error)
+        toast.error("Sign In fail");
+      }
+    }
 
   return (
     <div className="login" >
@@ -33,7 +69,7 @@ export default function Login() {
         </div>
         <div>
           <p>Already Signed In Once</p>
-          <button >
+          <button onClick={loginHandler} >
             <FcGoogle/>
             <span>Sigin In With Google</span>
           </button>

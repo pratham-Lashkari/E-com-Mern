@@ -13,7 +13,7 @@ app.post("/new" ,adminOnly,singleUpload , addProduct);
 app.get ("/latest",getLatestProduct);
 
 // Searching with filters
-app.get("/search",serarchAllFilters);
+app.get("/all",serarchAllFilters);
 
 // For category
 app.get("/category" ,getAllCategories );

@@ -26,3 +26,14 @@ export type CategoriesResponse = {
   success : boolean,
   category : string[]
 };
+
+export type SearchProductsResponse = AllProductResponse & {
+  totalLength  : number
+}
+export type SearchProductRequest = {
+  price : number ,
+  page : number ,
+  category : string,
+  search  : string,
+  sort : string
+}

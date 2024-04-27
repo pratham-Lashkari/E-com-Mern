@@ -1,18 +1,50 @@
-import { setsEqual } from "chart.js/helpers";
-import { useState } from "react"
+import { useState } from "react";
+import toast from "react-hot-toast";
 import ProductCard from "../Component/Product-cart";
+import { useCategoriesQuery, useSerarchProductQuery } from "../redux/api/productApi";
+import { CustomError } from "../types/api-types";
+import { Skeleton } from "../Component/Loader";
 
 export default function Search() {
 
-  const [search , setSearch] = useState("");
-  const [sort , setSort] = useState("");
-  const [maxPrice , setMaxPrice] = useState(10000);
-  const [category , setCategory] = useState("");
-  const [page , setPage] = useState(4);
+      const{ data : categoryResponse , 
+        isLoading : loadingCategory , 
+        isError , 
+        error } = useCategoriesQuery("");
+      
+        
+        const [search , setSearch] = useState("");
+        const [sort , setSort] = useState("");
+        const [maxPrice , setMaxPrice] = useState(10000);
+        const [category , setCategory] = useState("");
+        const [page , setPage] = useState(1);
+        
+        const { data : searchedData , 
+          isLoading : productLoading , 
+          isError: productIsError,
+          error: productError  } = useSerarchProductQuery({
+          search , 
+           sort , 
+          category ,
+           page , 
+          price : maxPrice });
 
-  const  addToCardHandler = ()=>{}
-  const isPrevPage = true;
-  const isNextPage = true;
+
+        const  addToCardHandler = ()=>{}
+        const isPrevPage = page>1;
+        const isNextPage = page < searchedData?.totalLength!;
+
+  if(isError)
+    {
+       const err = error as CustomError;
+       toast.error(err.data.message);
+    }
+
+    if (productIsError) {
+      const err = productError as CustomError;
+      toast.error(err.data.message);
+    }
+
 
   return (
     <div className="product-search-page">
@@ -36,7 +68,7 @@ export default function Search() {
          <input 
          type="range"
          min={100}
-         max={10000}
+         max={100000}
          value={maxPrice}
          onChange={(e)=>setMaxPrice(Number(e.target.value))}/> 
         </div>
@@ -47,9 +79,11 @@ export default function Search() {
          value={sort}
          onChange={(e)=>setCategory(e.target.value)} 
          >
-         <option value="">all</option>
-         <option value="">Sample 1</option>
-         <option value="">Sample 2</option>
+         <option value="">ALL</option>
+          { !loadingCategory &&  categoryResponse?.category.map((i)=>(
+              <option key={i} value={i}>{i.toUpperCase()}</option>
+          ))
+          }
          </select>
         </div>
 
@@ -63,32 +97,45 @@ export default function Search() {
         value={search}
         onChange={(e)=>setSearch(e.target.value)} />
 
-        <div className="search-product-list">
-          <ProductCard 
-          productId="afdsfsdf"
-          name="Mackbook"
-          price={4545}
-          stock={435}
-          handler={addToCardHandler}
-          photo="https://www.apple.com/newsroom/images/product/mac/standard/Apple_MacBook-Pro_14-16-inch_10182021_big.jpg.small_2x.jpg"/>
+        {productLoading ? (
+          <Skeleton length={10} />
+        ) :
+        (<div className="search-product-list">
+         { searchedData?.products.map((i)=>(
+            <ProductCard 
+            key={i._id}
+            productId={i._id}
+            name={i.name}
+            price={Number(i.price)}
+            stock={i.stock}
+            handler={addToCardHandler}
+            photo={i.photo}/>
+           ))
+         }
         </div>
+      )}
+          {
+            searchedData && searchedData.totalLength >= 1 && (
+              <article>
+              <button 
+              disabled={!isPrevPage} 
+              onClick={()=>setPage((prev)=>prev-1)}
+              >Prev</button>
+    
+              <span>
+                {page} of {searchedData.totalLength}
+              </span>
+    
+                <button  
+                disabled={!isNextPage} 
+                onClick={()=>(setPage((prev)=>prev+1))}
+                >Next</button>
+          
+             </article>
+            )
+          }
 
-         <article>
-          <button 
-          disabled={!isPrevPage} 
-          onClick={()=>setPage((prev)=>prev-1)}
-          >Prev</button>
-
-          <span>
-            {page} of {4}
-          </span>
-
-            <button  
-            disabled={!isNextPage} 
-            onClick={()=>(setPage((prev)=>prev+1))}
-            >Next</button>
-       
-         </article>
+        
       </main>
     </div>
   )

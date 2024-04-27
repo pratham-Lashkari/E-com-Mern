@@ -10,8 +10,7 @@ type DataType = {
    discount : number;
    status  : ReactElement;
    action : ReactElement;
-
-}
+};
 
 const column: Column<DataType>[]= [
   {

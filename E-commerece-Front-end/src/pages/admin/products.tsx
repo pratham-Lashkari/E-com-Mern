@@ -52,7 +52,6 @@ const Products = () => {
       const [rows, setRows] = useState<DataType[]>([]);
 
       const {data,isError,error,isLoading} = useAllProductsQuery(user?._id!);
-      console.log(data?.products)
       if(isError)
         {
            const err = error as CustomError;

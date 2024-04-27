@@ -176,8 +176,6 @@ export const deleteProduct =TryCatch(async(req,res,next)=>{
 });
 
 
-
-
 export const serarchAllFilters = TryCatch(async(req:Request<{},{},{},SearchTypes>,res,next)=>{
      
      const {search , category , price , sort } = req.query;
@@ -211,7 +209,7 @@ export const serarchAllFilters = TryCatch(async(req:Request<{},{},{},SearchTypes
 
       const filterProductsPromise = await Product.find(baseQuery);
 
-      const [product,filterProducts] = await Promise.all([productPromise,filterProductsPromise]);
+      const [products,filterProducts] = await Promise.all([productPromise,filterProductsPromise]);
       
 
       /*
@@ -222,7 +220,7 @@ export const serarchAllFilters = TryCatch(async(req:Request<{},{},{},SearchTypes
     const filterProducts = await Product.find(baseQuery);
     */
 
-    if(!product)
+    if(!products)
       {
          return next(new ErrorHandler("Empty stock" , 404));
       }
@@ -231,7 +229,7 @@ export const serarchAllFilters = TryCatch(async(req:Request<{},{},{},SearchTypes
 
       return res.status(200).send({
          success : true,
-         product,
+         products,
          totalLength
       })
 });

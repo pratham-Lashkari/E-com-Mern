@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
 import ProductCard from "../Component/Product-cart";
+import toast from "react-hot-toast";
+import { useLatestProductQuery } from "../redux/api/productApi";
+import Loader from "../Component/Loader";
 
-export default function Home() {
+export default function Home(){
+
+
+  const {data ,isLoading , isError}  =  useLatestProductQuery("");
+
+  if (isError) {
+    toast.error("Fetching failed");
+  }
 
   const addToCardHandler =()=>{
 
@@ -14,15 +24,20 @@ export default function Home() {
         <Link to={"/search"} className="findmore">More</Link>
       </h1>
       <main>
-      <ProductCard  
-        productId="afdsfsdf"
-        name="Mackbook"
-        price={4545}
-        stock={435}
-        handler={addToCardHandler}
-        photo="https://www.apple.com/newsroom/images/product/mac/standard/Apple_MacBook-Pro_14-16-inch_10182021_big.jpg.small_2x.jpg"
-        />
-
+      { 
+      isLoading ? (<Loader/> ): 
+       (data?.products.map((i) => (
+          <ProductCard
+            key={i._id}
+            productId={i._id}
+            name={i.name}
+            price={Number(i.price)}
+            stock={i.stock}
+            handler={addToCardHandler}
+            photo={i.photo}
+          />
+        ))
+        )}
       </main>
     </div>
   )

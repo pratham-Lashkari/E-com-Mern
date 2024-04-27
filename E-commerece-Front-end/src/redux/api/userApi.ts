@@ -20,6 +20,8 @@ export const userApi  = createApi({
   })
 });
 
+export const {useLoginMutation} = userApi ;
+
 export const getUser = async(id : string)=>{
     try {
       const {data} : {data : UserResponse} = await axios.get(`${import.meta.env.VITE_SERVER}/api/v1/user/${id}`);
@@ -27,6 +29,4 @@ export const getUser = async(id : string)=>{
     } catch (error) {
       throw error;
     }
-}
-
-export const {useLoginMutation} = userApi ;
+};

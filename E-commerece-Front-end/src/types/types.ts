@@ -8,3 +8,12 @@ export interface User {
   _id : string
 }
 
+export interface Product {
+  name : string,
+  price : string,
+  category : string,
+  stock : number,
+  photo : string,
+  _id : string
+
+}

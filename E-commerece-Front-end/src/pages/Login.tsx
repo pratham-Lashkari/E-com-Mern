@@ -6,6 +6,7 @@ import { useLoginMutation } from "../redux/api/userApi";
 import toast from "react-hot-toast";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import { MessageResponse } from "../types/api-types";
+import { Navigate } from "react-router-dom";
 
 export default function Login() {
 
@@ -31,6 +32,7 @@ export default function Login() {
          if("data" in res)
           {
               toast.success(res.data.message);
+              <Navigate to={"/"}/>
           }
           else{
             const error = res.error as FetchBaseQueryError;

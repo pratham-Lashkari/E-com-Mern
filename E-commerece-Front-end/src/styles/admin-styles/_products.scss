@@ -4,6 +4,10 @@
   overflow: auto;
   @include square(100%);
 }
+.search-product-list{
+  display: flex;
+  flex-wrap: wrap;
+}
 
 .create-product-btn {
   position: fixed;

@@ -3,7 +3,6 @@ import { TryCatch } from "../middlewares/error.js";
 import { Order } from "../models/order.js";
 import { Product } from "../models/product.js";
 import { User } from "../models/user.js";
-import { BaseQuery } from "../types/user.js";
 import { InvalidateCache, calculatePercentage, getChartsData, getInventoryCount } from "../utils/feature.js";
 
 export const getDashboardStats = TryCatch(async(req,res,next)=>{

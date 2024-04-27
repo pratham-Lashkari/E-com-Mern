@@ -1,15 +1,30 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { AllProductResponse, CategoriesResponse, SearchProductRequest, SearchProductsResponse } from "../../types/api-types";
+import { AllProductResponse, CategoriesResponse, MessageResponse, NewProductRequest, SearchProductRequest, SearchProductsResponse } from "../../types/api-types";
 
 export const productAPI = createApi({
   reducerPath : "productApi",
   baseQuery  : fetchBaseQuery({
     baseUrl : `${import.meta.env.VITE_SERVER}/api/v1/product/`
   }),
+  tagTypes : ["product"],
   endpoints : (builder)=>({
-    latestProduct : builder.query<AllProductResponse , string>({query : ()=>"latest"}),
-    allProducts : builder.query<AllProductResponse , string>({query : (id)=>`admin-product?id=${id}`}),
-    categories : builder.query<CategoriesResponse , string>({query : ()=>`category`}),
+
+    latestProduct : builder.query<AllProductResponse , string>({
+      query : ()=>"latest" , 
+      providesTags:["product"]
+    }),
+
+    allProducts : builder.query<AllProductResponse , string>({
+      query : (id)=>`admin-product?id=${id}`,
+      providesTags:["product"]
+    }),
+
+    categories : builder.query<CategoriesResponse , string>({
+      query : ()=>`category`,
+      providesTags:["product"]
+
+    }),
+
     serarchProduct : builder.query<SearchProductsResponse , SearchProductRequest>(
       {query : ({price , page , category , sort , search})=> {
          let base  = `all?search=${search}&page=${page}`
@@ -18,11 +33,23 @@ export const productAPI = createApi({
          if(category) base += `&category=${category}`;
          return base;
       },
+      providesTags:["product"]
       }),
+
+      newProduct : builder.mutation<MessageResponse ,NewProductRequest>({
+        query : ({formData, id }) => ({
+          url : `new?id=${id}`,
+          method : "POST",
+          body : formData
+        }),
+        invalidatesTags : ["product"]
+      }),
+
   }),
 });
 
 export const { useLatestProductQuery ,
   useAllProductsQuery , 
   useCategoriesQuery , 
-  useSerarchProductQuery } = productAPI;
+  useSerarchProductQuery,
+  useNewProductMutation} = productAPI;

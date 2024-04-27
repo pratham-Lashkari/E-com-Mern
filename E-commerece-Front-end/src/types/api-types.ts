@@ -13,3 +13,16 @@ export type AllProductResponse = {
   success : boolean,
   products : Product[]
 };
+
+export type CustomError = {
+    status : number,
+    data : {
+      message : string,
+      success : boolean
+    }
+}
+
+export type CategoriesResponse = {
+  success : boolean,
+  category : string[]
+};

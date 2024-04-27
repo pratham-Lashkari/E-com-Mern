@@ -19,7 +19,7 @@ app.get("/search",serarchAllFilters);
 app.get("/category" ,getAllCategories );
 
 // to get all products
-app.get("/admin-product",adminOnly,getAdminProduct);
+app.get("/admin-product", adminOnly,getAdminProduct);
 
 app.route("/:id").get(getSingleProduct).put(adminOnly,updateProduct).delete(adminOnly,deleteProduct);
 

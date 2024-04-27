@@ -15,5 +15,9 @@ export interface Product {
   stock : number,
   photo : string,
   _id : string
+}
 
+export interface SkeletonProps{
+  width?  :string,
+  length? : number
 }

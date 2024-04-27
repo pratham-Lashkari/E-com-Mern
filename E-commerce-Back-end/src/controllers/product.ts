@@ -49,19 +49,19 @@ export const getAllCategories =TryCatch(async(req:Request<{},{},NewProducttype>,
 
 export const getAdminProduct =TryCatch(async(req:Request<{},{},NewProducttype>,res,next)=>{
 
-   let product:any = [];
+   let products;
    
    if(myCache.has("admin-Product"))
       {
-         product = JSON.parse(myCache.get("admin-Product") as string);
+         products = JSON.parse(myCache.get("admin-Product") as string);
       }
       else{
-         product = await Product.find({});
-         myCache.set("admin-Product",JSON.stringify(product));
+         products = await Product.find({});
+         myCache.set("admin-Product",JSON.stringify(products));
       }
    return res.status(201).send({
     success : true,
-    product
+    products
    })
 });
 

@@ -2,24 +2,39 @@ import { useEffect, useState } from "react";
 import { VscError } from "react-icons/vsc";
 import CartItem from "../Component/Cart-item";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { CartReducerInitialState } from "../types/reducer-types";
+import { addToCartItems, cartReducer, removeCartItems } from "../redux/reducer/cartReducer";
+import { CartItemsType } from "../types/types";
+import toast from "react-hot-toast";
 
-const cartItems = [
-  {
-    productId : "afsdfsdfdsf",
-    photo : "https://www.apple.com/newsroom/images/product/mac/standard/Apple_MacBook-Pro_14-16-inch_10182021_big.jpg.small_2x.jpg",
-    name : "Mackbook",
-    price : 34334,
-    quantity : 2,
-    stock : 10
-  }
-];
-const subTotal = 4000;
-const tax = Math.round(subTotal * 0.18);
-const shippingCharges = 200;
-const total = subTotal * tax + shippingCharges;
-const discount = 400;
+
 
 export default function Cart() {
+
+
+  const {cartItems , subTotal, tax , shippingCharges , total , discount} = useSelector(
+    (state : {cartReducer : CartReducerInitialState}) => state.cartReducer )
+
+    const dispatch = useDispatch();
+
+    const incrementHandler =(cartItems : CartItemsType)=>{
+      if(cartItems.quantity >= cartItems.stock)return;
+      dispatch(addToCartItems({...cartItems , quantity : cartItems.quantity+1}));
+      toast.success("Added to cart");
+    }
+    const decrementHandler =(cartItems : CartItemsType)=>{
+      if(cartItems.quantity <= 1)return;
+      dispatch(addToCartItems({...cartItems , quantity : cartItems.quantity-1}));
+      toast.success("Reomved form cart");
+    }
+    const removeHandler =(productId:string)=>{
+      dispatch(removeCartItems(productId));
+      toast.success("Reomved form cart");
+
+   }
+
+
   const [cuponCode , setCuponCode] = useState<string>("")
   const [isValid , setIsValid] = useState<boolean>(false);
 
@@ -40,7 +55,12 @@ export default function Cart() {
       <main>
       {
         cartItems.length ? cartItems.map((item, i)=>(
-          <CartItem  key={i} cartItems={item}  />
+          <CartItem  
+          key={i} 
+          cartItems={item} 
+          incrementHandler={incrementHandler}
+          decremntHandler={decrementHandler}
+          removeHandler={removeHandler} />
         )) : <h1>No Items Added</h1>
       }
 

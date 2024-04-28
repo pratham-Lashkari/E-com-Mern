@@ -1,4 +1,4 @@
-export interface User {
+export type User = {
   name : string,
   email : string,
   photo : string,
@@ -8,7 +8,7 @@ export interface User {
   _id : string
 }
 
-export interface Product {
+export type Product = {
   name : string,
   price : number,
   category : string,
@@ -17,7 +17,25 @@ export interface Product {
   _id? : string
 }
 
-export interface SkeletonProps{
+export type SkeletonProps = {
   width?  :string,
   length? : number
+}
+
+export type ShippingInfotype =  {
+  address : string,
+  city : string ,
+  pincode : number ,
+  state : string,
+  country : string
+};
+
+
+export type CartItemsType = {
+  productId : string, 
+  photo : string ,
+  name : string,
+  price : number , 
+  quantity : number,
+  stock : number
 }

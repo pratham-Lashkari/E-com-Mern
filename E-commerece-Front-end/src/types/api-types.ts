@@ -42,3 +42,17 @@ export type NewProductRequest = {
   id : string,
   formData : FormData
 }
+
+
+export type ProductResponse = {
+  success : boolean,
+  product : Product
+}
+
+
+
+export type UpdateProductRequest = {
+  userId : string,
+  productId : string,
+  formData : FormData
+}

@@ -4,9 +4,11 @@ import { VscError } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CartItem from "../Component/Cart-item";
-import { addToCartItems, calculatePrice, removeCartItems } from "../redux/reducer/cartReducer";
+import { addToCartItems, calculatePrice, discountApply, removeCartItems } from "../redux/reducer/cartReducer";
 import { CartReducerInitialState } from "../types/reducer-types";
 import { CartItemsType } from "../types/types";
+import axios from "axios";
+import { server } from "../redux/store";
 
 
 
@@ -39,13 +41,30 @@ export default function Cart() {
   const [isValid , setIsValid] = useState<boolean>(false);
 
   useEffect(()=>{
+    const {token,cancel } = axios.CancelToken.source();
     const timeOutID = setTimeout(() => {
-      if(Math.random() > 0.5) setIsValid(true);
-      else setIsValid(false);
+
+      axios.get(`${server}/api/v1/payment/discount?cupon=${cuponCode}` ,
+        {
+          cancelToken : token
+        }
+      )
+      .then((res)=>{
+        dispatch(discountApply(res.data.discount));
+        dispatch(calculatePrice())
+        setIsValid(true)
+      })
+      .catch(()=>{
+        dispatch(discountApply(0));
+        dispatch(calculatePrice())
+        setIsValid(false)
+      })
+    
     }, 1000);
 
     return ()=>{
       clearTimeout(timeOutID);
+      cancel()
       setIsValid(false);
     }
   },[cuponCode]);

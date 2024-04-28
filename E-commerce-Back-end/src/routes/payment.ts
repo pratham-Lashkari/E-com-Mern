@@ -5,14 +5,14 @@ import { adminOnly } from "../middlewares/auth.js";
 const app = express.Router();
 
 // For creating a cupon 
-app.post("/coupon/new" ,newCupon );
+app.post("/coupon/new",adminOnly ,newCupon );
 
 
 // For creating  payement 
 app.post("/create" , createPaymentIntent);
 
 // getting discount
-app.get("/discount",adminOnly ,applyDiscount);
+app.get("/discount" ,applyDiscount);
 
 // Get All Cupons
 app.get("/all/cupons" , adminOnly , getAllCupons);

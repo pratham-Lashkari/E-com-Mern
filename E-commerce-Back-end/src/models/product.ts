@@ -15,7 +15,7 @@ const schema = new mongoose.Schema({
   },
   photo:{
     type : String,
-    required :[true,"Please inser photo"]
+    required :[true,"Please insert photo"]
   },
   stock:{
     type :Number,

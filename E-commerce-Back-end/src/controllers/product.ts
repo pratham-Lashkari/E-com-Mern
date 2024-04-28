@@ -121,7 +121,8 @@ export const updateProduct =TryCatch(async(req,res,next)=>{
 
    const id = req.params.id;
  
-   const {name, stock,category,price} = req.body;
+   const {name, price,stock ,category} = req.body;
+   console.log(name)
    const photo = req.file;
    const product = await Product.findById(id);
    if(!product)
@@ -143,7 +144,7 @@ export const updateProduct =TryCatch(async(req,res,next)=>{
       
     await product.save();
 
-   await InvalidateCache({product:true});
+   await InvalidateCache({product:true,admin:true});
 
 
    return res.status(200).send({

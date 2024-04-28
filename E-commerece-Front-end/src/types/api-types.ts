@@ -1,3 +1,4 @@
+import { StringFormat } from "firebase/storage";
 import { Product, User } from "./types"
 
 export interface MessageResponse {
@@ -49,10 +50,11 @@ export type ProductResponse = {
   product : Product
 }
 
+
 export type UpdateProductRequest = {
   userId : string,
   productId : string,
-  formData : FormData
+  updatedData : Product
 }
 
 

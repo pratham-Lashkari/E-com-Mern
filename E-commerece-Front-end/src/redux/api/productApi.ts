@@ -51,10 +51,10 @@ export const productAPI = createApi({
       }),
 
       updateProduct : builder.mutation<MessageResponse ,UpdateProductRequest>({
-        query : ({formData, userId , productId }) => ({
+        query : ({updatedData, userId , productId }) => ({
           url : `${productId}?id=${userId}`,
           method : "PUT",
-          body : formData
+          body : updatedData
         }),
         invalidatesTags : ["product"]
       }),

@@ -3,12 +3,13 @@ import { FaTrash } from "react-icons/fa";
 import AdminSidebar from "../../../Component/admin/AdminSidebar";
 import { useSelector } from "react-redux";
 import { UserReducerInitialState } from "../../../types/reducer-types";
-import { useProductDetailsQuery } from "../../../redux/api/productApi";
-import { Form, useParams } from "react-router-dom";
+import { useDeleteProductMutation, useProductDetailsQuery, useUpdateProductMutation } from "../../../redux/api/productApi";
+import {  useNavigate, useParams } from "react-router-dom";
 import { server } from "../../../redux/store";
+import { Skeleton } from "../../../Component/Loader";
+import { resposneToast } from "../../../utils/freature";
 
-const img =
-  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
+
 
 const Productmanagement = () => {
     
@@ -16,58 +17,89 @@ const Productmanagement = () => {
     (state : {userReducer : UserReducerInitialState})=>state.userReducer);
 
     const param = useParams();
-    const {data} =  useProductDetailsQuery(param.id!);
-    console.log(param.id)
-  const {price , stock , name , photo , category} = data?.product || {
-    price: 0,
-    stock : 0,
-    name : "",
-    photo : "",
-    category : ""
-  };
-  
 
-  const [priceUpdate, setPriceUpdate] = useState<number>(price as number);
-  const [stockUpdate, setStockUpdate] = useState<number>(stock);
-  const [nameUpdate, setNameUpdate] = useState<string>(name);
-  const [categoryUpdate, setCategoryUpdate] = useState<string>(category);
-  const [photoUpdate, setPhotoUpdate] = useState<string>(photo);
-  const [photoFile, setPhotoFile] = useState<File>();
+    const {data , isLoading} =  useProductDetailsQuery(param.id!);
+    const navigate = useNavigate();
+
+    const {price , stock , name , photo , category} = data?.product || {
+      price: 0,
+      stock : 0,
+      name : "",
+      photo : "",
+      category : ""
+    };
+    
+    
+    const [priceUpdate, setPriceUpdate] = useState<number>(price as number);
+    const [stockUpdate, setStockUpdate] = useState<number>(stock);
+    const [nameUpdate, setNameUpdate] = useState<string>(name);
+    const [categoryUpdate, setCategoryUpdate] = useState<string>(category);
+    const [photoUpdate, setPhotoUpdate] = useState<string>("");
+    const [photoFile, setPhotoFile] = useState<File>();
+    
+    const [updateProduct] = useUpdateProductMutation();
+    const [deleteProduct] = useDeleteProductMutation();
 
   const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const file: File | undefined = e.target.files?.[0];
-
     const reader: FileReader = new FileReader();
-
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         if (typeof reader.result === "string") {
           setPhotoUpdate(reader.result);
           setPhotoFile(file);
-        }
+        } 
       };
     }
   };
 
-  const submitHandler = (e: FormEvent<HTMLFormElement>): void => {
+  const submitHandler = async(e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-     const formData = new FormData();
-     if(nameUpdate) formData.set("name" , nameUpdate);
-     if(priceUpdate) formData.set("price" , priceUpdate.toString());
-     if(stockUpdate) formData.set("stock" , stockUpdate.toString());
-     if(categoryUpdate) formData.set("category" , categoryUpdate);
-     if(photoUpdate) formData.set("photo" , photoUpdate );
+
+    //  const formData = new FormData();
+    //  if(nameUpdate) formData.set("name" , nameUpdate);
+    //  if(priceUpdate) formData.set("price" , priceUpdate.toString());
+    //  if(stockUpdate) formData.set("stock" , stockUpdate.toString());
+    //  if(categoryUpdate) formData.set("category" , categoryUpdate);
+    //  if(photoUpdate) formData.set("photo" , photoUpdate );
+
+    const updatedData = {
+      name : nameUpdate || name,
+      price : priceUpdate || price,
+      stock : stockUpdate || stock,
+      photo : photoUpdate || photo,
+      category : categoryUpdate || category,
+    }
+
+
+     const res = await updateProduct({
+      updatedData,
+      userId : user?._id!,
+      productId : data?.product._id!,
+     });
+
+     resposneToast(res , navigate , "/admin/product");
   };
+
+  const deleteHandler = async() => {
+     const res = await deleteProduct({
+      userId : user?._id!,
+      productId : data?.product._id!,
+     });
+
+     resposneToast(res , navigate , "/admin/product");
+  };
+
+
 
   useEffect(()=>{
     if(data)
       {
         setNameUpdate(data.product.name);
-        setPriceUpdate(Number(data.product.price));
+        setPriceUpdate(data.product.price);
         setStockUpdate(data.product.stock);
         setCategoryUpdate(data.product.category);
-        setPhotoUpdate(data.product.photo);
       }
   },[data])
 
@@ -75,7 +107,11 @@ const Productmanagement = () => {
     <div className="admin-container">
       <AdminSidebar />
       <main className="product-management">
-        <section>
+         {
+          isLoading ? <Skeleton length={10}/> :
+          (
+            <>
+            <section>
           <strong>ID - {data?.product._id}</strong>
           <img src={`${server}/${photo}`} alt="Product" />
           <p>{name}</p>
@@ -87,7 +123,7 @@ const Productmanagement = () => {
           <h3>₹{price}</h3>
         </section>
         <article>
-          <button className="product-delete-btn">
+          <button className="product-delete-btn"  onClick={deleteHandler} >
             <FaTrash />
           </button>
           <form onSubmit={submitHandler}>
@@ -135,10 +171,13 @@ const Productmanagement = () => {
               <input type="file" onChange={changeImageHandler} />
             </div>
 
-            {photoUpdate && <img src={`${server}/${photoUpdate}`} alt="New Image" />}
+            {photoUpdate != "" && <img src={photoUpdate} alt="New Image" />}
             <button type="submit">Update</button>
           </form>
         </article>
+            </>
+          )
+         }
       </main>
     </div>
   );

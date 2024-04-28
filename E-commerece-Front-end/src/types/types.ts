@@ -10,11 +10,11 @@ export interface User {
 
 export interface Product {
   name : string,
-  price : string,
+  price : number,
   category : string,
   stock : number,
   photo : string,
-  _id : string
+  _id? : string
 }
 
 export interface SkeletonProps{

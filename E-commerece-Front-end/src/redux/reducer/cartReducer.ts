@@ -40,8 +40,18 @@ export const cartReducer = createSlice({
       state.loading = true;
       state.cartItems = state.cartItems.filter((i)=>i.productId !== action.payload);
       state.loading  = false;
+    },
+    calculatePrice : (state) => {
+
+      const subTotal = state.cartItems.reduce(
+        (total,item) => total + item.price * item.quantity,0 );
+     
+      state.subTotal = subTotal;
+      state.shippingCharges = state.subTotal > 1000 ? 0:200;
+      state.tax = Math.round(state.subTotal * 0.18);
+      state.total = state.subTotal + state.tax + state.shippingCharges - state.discount;
     }
   }
 });
 
-export const {addToCartItems , removeCartItems} = cartReducer.actions;
+export const {addToCartItems , removeCartItems,calculatePrice} = cartReducer.actions;

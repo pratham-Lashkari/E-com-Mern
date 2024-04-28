@@ -22,6 +22,7 @@ export default function Home(){
     dispatch(addToCartItems(cartItems));
     toast.success("Added to cart");
   }
+  
   return (
     <div className="home">
       <section></section>

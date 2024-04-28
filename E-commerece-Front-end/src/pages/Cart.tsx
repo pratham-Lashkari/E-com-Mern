@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { VscError } from "react-icons/vsc";
-import CartItem from "../Component/Cart-item";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { CartReducerInitialState } from "../types/reducer-types";
-import { addToCartItems, cartReducer, removeCartItems } from "../redux/reducer/cartReducer";
-import { CartItemsType } from "../types/types";
 import toast from "react-hot-toast";
+import { VscError } from "react-icons/vsc";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import CartItem from "../Component/Cart-item";
+import { addToCartItems, calculatePrice, removeCartItems } from "../redux/reducer/cartReducer";
+import { CartReducerInitialState } from "../types/reducer-types";
+import { CartItemsType } from "../types/types";
 
 
 
@@ -49,6 +49,10 @@ export default function Cart() {
       setIsValid(false);
     }
   },[cuponCode]);
+
+  useEffect(()=>{
+  dispatch(calculatePrice())
+  },[cartItems])
 
   return (
     <div className="cart">

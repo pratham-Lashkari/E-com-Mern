@@ -1,5 +1,4 @@
-import { StringFormat } from "firebase/storage";
-import { Product, User } from "./types"
+import { CartItemsType, Product, ShippingInfotype, User } from "./types";
 
 export interface MessageResponse {
   success : boolean,
@@ -61,4 +60,15 @@ export type UpdateProductRequest = {
 export type DeleteProductRequest = {
   userId : string,
   productId : string,
+}
+
+export type NewOrderTypes = {
+  orderItems : CartItemsType[],
+  subTotal  :  number,
+  tax : number,
+  shippingCharges : number,
+  discount : number,
+  total : number,
+  shippinInfo : ShippingInfotype,
+  userId : string
 }

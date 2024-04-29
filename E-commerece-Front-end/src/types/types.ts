@@ -39,3 +39,14 @@ export type CartItemsType = {
   quantity : number,
   stock : number
 }
+
+
+export type OrderItemsType = {
+  productId : string, 
+  photo : string ,
+  name : string,
+  price : number , 
+  quantity : number,
+  stock : number
+}
+

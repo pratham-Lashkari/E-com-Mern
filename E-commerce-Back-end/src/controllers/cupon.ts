@@ -14,7 +14,6 @@ export const createPaymentIntent = TryCatch(async (req,res,next)=>{
       amount:Number(amount) * 100,
       currency :"inr"
     });
-
     return res.status(201).send({
       success : true,
       clientSecret : payemntIntent.client_secret

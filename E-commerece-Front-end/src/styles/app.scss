@@ -301,3 +301,12 @@ $color3 :rgb(0,104,136);
     opacity: 0.6;
   }
 }
+
+.notFound-page{
+    @include flex(column , center,center,2rem);
+    font-size: 3rem;
+    color: red;
+    >svg{
+      font-size:10rem;
+    }
+}

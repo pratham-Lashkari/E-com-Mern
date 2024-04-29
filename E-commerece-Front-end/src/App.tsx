@@ -14,6 +14,7 @@ import { userExist, userNotExist } from "./redux/reducer/userReducer"
 import { getUser } from "./redux/api/userApi"
 import { UserReducerInitialState } from "./types/reducer-types"
 import ProtectedRoute from "./Component/Protected-Route"
+
 // Adming imports
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
 const Products = lazy(() => import("./pages/admin/products"));
@@ -35,6 +36,7 @@ const TransactionManagement = lazy(
 const Shipping = lazy(() => import("./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login"));
 const Order = lazy(() => import("./pages/Order"));
+const NotFound = lazy(()=> import("./pages/Not-Found"));
 
 function App() {
   
@@ -108,7 +110,7 @@ function App() {
          <Route path="/admin/transaction/:id" element={<TransactionManagement />} />
  
         </Route>; 
- 
+          <Route path="*" element={<NotFound/>}/>
    </Routes>
    </Suspense>
    <Toaster position="bottom-center"/>

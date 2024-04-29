@@ -54,6 +54,8 @@ export const myOrder = TryCatch(async(req:Request<{},{},NewOrderRequestTypes>,re
         order  = await Order.find({user});
         myCache.set(key , JSON.stringify(order));
       }
+   InvalidateCache({product : true , order : true , admin : true ,key});
+
    return res.status(201).send({
      success : true,
      order
@@ -73,6 +75,8 @@ export  const allOrder = TryCatch(async(req,res,next)=>{
       orders  = await Order.find().populate("user","name");
       myCache.set(key , JSON.stringify(orders));
     }
+    InvalidateCache({product : true , admin :true , order: true , key });
+
  return res.status(200).send({
    success : true,
    orders
@@ -100,6 +104,8 @@ export  const getSingleOrder = TryCatch(async(req,res,next)=>{
       myCache.set(key ,JSON.stringify(order))
     }
 
+    InvalidateCache({product : true , order : true , admin : true ,key});
+
     return res.status(200).send({
       success : true,
       order
@@ -111,6 +117,7 @@ export const processOrder =TryCatch(async(req,res,next)=>{
 
   const {id} = req.params;
   const key = `order-${id}`
+
 
   const order = await Order.findById(id);
 
@@ -128,7 +135,7 @@ export const processOrder =TryCatch(async(req,res,next)=>{
   }
    await order.save();
 
-   InvalidateCache({product:false , order:true,admin:true,key})
+   InvalidateCache({product:true , order:true,admin:true,key})
    
    return res.status(200).send({
     success : true,
@@ -148,7 +155,7 @@ export const deleteOrder =TryCatch(async(req,res,next)=>{
 
    await order.deleteOne();
 
-   InvalidateCache({product : false , order : true , admin : false,key});
+   InvalidateCache({product : true , order : true , admin : true ,key});
    return res.status(200).send({
     success : true,
     message : "Deleted Successfully"

@@ -60,7 +60,8 @@ function App() {
     <Router>
        <Header user={user}/>
 
-    <Suspense fallback={<Loader/>}> <Routes>
+    <Suspense fallback={<Loader/>}>
+     <Routes>
        <Route path="/"element={<Home/>} / >
        <Route path="/Cart"element={<Cart/>} / >
        <Route path="/Search"element={<Search/>} / >

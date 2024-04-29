@@ -1,74 +1,95 @@
-import { CartItemsType, Product, ShippingInfotype, User } from "./types";
+import { 
+  CartItemsType, 
+  Order, 
+  Product, 
+  ShippingInfotype, 
+  User } from "./types";
 
 export interface MessageResponse {
-  success : boolean,
-  message : string
-};
+  success : boolean;
+  message : string;
+};;
 
 export type UserResponse = {
-   success : boolean,
-   user : User
-};
+   success : boolean;
+   user : User;
+};;
 export type AllProductResponse = {
-  success : boolean,
-  products : Product[]
-};
+  success : boolean;
+  products : Product[];
+};;
 
 export type CustomError = {
-    status : number,
+    status : number;
     data : {
-      message : string,
-      success : boolean
-    }
-}
-
-export type CategoriesResponse = {
-  success : boolean,
-  category : string[]
+      message : string;
+      success : boolean;
+    };
 };
 
+export type CategoriesResponse = {
+  success : boolean;
+  category : string[];
+};;
+
 export type SearchProductsResponse = AllProductResponse & {
-  totalLength  : number
-}
+  totalLength  : number;
+};
 export type SearchProductRequest = {
-  price : number ,
-  page : number ,
-  category : string,
-  search  : string,
-  sort : string
-}
+  price : number;
+  page : number;
+  category : string;
+  search  : string;
+  sort : string;
+};
 
 export type NewProductRequest = {
-  id : string,
-  formData : FormData
-}
+  id : string;
+  formData : FormData;
+};
 
 
 export type ProductResponse = {
-  success : boolean,
-  product : Product
-}
+  success : boolean;
+  product : Product;
+};
 
 
 export type UpdateProductRequest = {
-  userId : string,
-  productId : string,
-  updatedData : Product
-}
+  userId : string;
+  productId : string;
+  updatedData : Product;
+};
 
 
 export type DeleteProductRequest = {
-  userId : string,
-  productId : string,
-}
+  userId : string;
+  productId : string;
+};
 
 export type NewOrderTypes = {
-  orderItems : CartItemsType[],
-  subTotal  :  number,
-  tax : number,
-  shippingCharges : number,
-  discount : number,
-  total : number,
-  shippinInfo : ShippingInfotype,
-  userId : string
-}
+  orderItems : CartItemsType[];
+  subTotal  :  number;
+  tax : number;
+  shippingCharges : number;
+  discount : number;
+  total : number;
+  shippinInfo : ShippingInfotype;
+  userId : string;
+};
+
+export type UpdateOrderRequesttype = {
+  userId : string;
+  orderId : string;
+};
+
+export type AllOrderResposne = {
+  success : boolean;
+  orders : Order[];
+};
+
+export type OrderDetailsResponse = {
+  success : boolean;
+  order : Order;
+};
+

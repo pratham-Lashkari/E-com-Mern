@@ -1,67 +1,92 @@
-import { FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import AdminSidebar from "../../../Component/admin/AdminSidebar";
-import { OrderItem } from "../../../models/types";
-import { server } from "../../../redux/store";
 import { useState } from "react";
+import { FaTrash } from "react-icons/fa";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import AdminSidebar from "../../../Component/admin/AdminSidebar";
+import { server } from "../../../redux/store";
+import { Order, OrderItemsType } from "../../../types/types";
+import { useSelector } from "react-redux";
+import { UserReducerInitialState } from "../../../types/reducer-types";
+import { useDeleteOrderMutation, useOrdersDetailsQuery, useUpdateOrderMutation } from "../../../redux/api/orderApi";
+import { CustomError } from "../../../types/api-types";
+import toast from "react-hot-toast";
+import { Skeleton } from "../../../Component/Loader";
+import { resposneToast } from "../../../utils/freature";
 
-const img =
-  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
 
-const orderItems: OrderItem[] = [
-  {
-    name: "Puma Shoes",
-    photo: img,
-    id: "asdsaasdas",
-    quantity: 4,
-    price: 2000,
+const defaultData: Order= {
+  shippingInfo : {
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    pincode: 0,
   },
-];
+  status: "",
+  subtotal: 0,
+  discount: 0,
+  shippingCharges: 0,
+  tax: 0,
+  total: 0,
+  orderItems:[],
+  user : {
+    name : "",
+    _id : ""
+  },
+  _id:"",
+}
 
 const TransactionManagement = () => {
-  const [order, setOrder] = useState({
-    name: "Puma Shoes",
-    address: "77 black street",
-    city: "Neyword",
-    state: "Nevada",
-    country: "US",
-    pinCode: 242433,
-    status: "Processing",
-    subtotal: 4000,
-    discount: 1200,
-    shippingCharges: 0,
-    tax: 200,
-    total: 4000 + 200 + 0 - 1200,
-    orderItems,
-  });
 
-  const {
-    name,
-    address,
-    city,
-    country,
-    state,
-    pinCode,
-    subtotal,
-    shippingCharges,
-    tax,
+  const {user} =  useSelector(
+    (state : {userReducer : UserReducerInitialState}) => state.userReducer
+  );
+  const params = useParams();
+  const navigate = useNavigate();
+
+  const {isLoading, isError,data,error,} = useOrdersDetailsQuery(params.id!);
+
+  const { 
+    shippingInfo :{address,city,country,pincode,state}, 
+    orderItems ,  
+    user :{name}, 
+    status , 
+    tax , 
+    subtotal , 
+    total ,
     discount,
-    total,
-    status,
-  } = order;
+    shippingCharges
+  } = data?.order || defaultData;
+  console.log(subtotal)
 
-  const updateHandler = (): void => {
-    setOrder((prev) => ({
-      ...prev,
-      status: "Shipped",
-    }));
+  if(isError) return <Navigate to={"/404"}/>
+
+   const [updateOrder] = useUpdateOrderMutation();
+   const [deleteOrder] = useDeleteOrderMutation();
+
+  const updateHandler = async()=>{
+    const res = await updateOrder({
+      userId : user?._id!,
+      orderId : data?.order._id!
+    });
+    resposneToast(res , navigate , "/admin/transaction");
   };
+
+  const deleteHandler = async()=>{
+    const res = await deleteOrder({
+      userId : user?._id!,
+      orderId : data?.order._id!
+    });
+    resposneToast(res , navigate , "/admin/transaction");
+  }
 
   return (
     <div className="admin-container">
       <AdminSidebar />
       <main className="product-management">
-        <section
+       {
+        isLoading ? <Skeleton length={20}/> :
+        <>
+         <section
           style={{
             padding: "2rem",
           }}
@@ -89,7 +114,7 @@ const TransactionManagement = () => {
           <h5>User Info</h5>
           <p>Name: {name}</p>
           <p>
-            Address: {`${address}, ${city}, ${state}, ${country} ${pinCode}`}
+            Address: {`${address}, ${city}, ${state}, ${country} ${pincode}`}
           </p>
           <h5>Amount Info</h5>
           <p>Subtotal: {subtotal}</p>
@@ -117,6 +142,8 @@ const TransactionManagement = () => {
             Process Status
           </button>
         </article>
+        </>
+       }
       </main>
     </div>
   );
@@ -128,7 +155,7 @@ const ProductCard = ({
   price,
   quantity,
   productId,
-}: OrderItem) => (
+}: OrderItemsType) => (
   <div className="transaction-product-card">
     <img src={photo} alt={name} />
     <Link to={`/product/${productId}`}>{name}</Link>

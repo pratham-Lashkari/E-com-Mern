@@ -15,7 +15,7 @@ import { getUser } from "./redux/api/userApi"
 import { UserReducerInitialState } from "./types/reducer-types"
 import ProtectedRoute from "./Component/Protected-Route"
 
-// Adming imports
+// Admin imports
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
 const Products = lazy(() => import("./pages/admin/products"));
 const Customers = lazy(() => import("./pages/admin/customers"));
@@ -37,6 +37,7 @@ const Shipping = lazy(() => import("./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login"));
 const Order = lazy(() => import("./pages/Order"));
 const NotFound = lazy(()=> import("./pages/Not-Found"));
+const CheckOut = lazy(()=> import("./pages/CheckOut"));
 
 function App() {
   
@@ -75,8 +76,9 @@ function App() {
 
          {/* logged in users */}
          <Route element={<ProtectedRoute isAunthenticated={user ? true : false}/>}>
-         <Route path="/Shipping"element={<Shipping/>} / >
          <Route path="/Orders"element={<Order/>} / >
+         <Route path="/Shipping"element={<Shipping/>} / >
+         <Route path="/pay"element={<CheckOut/>} / >
          </Route>
 
 

@@ -20,13 +20,15 @@ export default function Shipping() {
     city : "",
     state : "",
     country:"",
-    pinCode : "",
+    pincode : "",
   });
-   const changeHandler =(e:ChangeEvent<HTMLInputElement | HTMLSelectElement>)=>{
+
+  const changeHandler =(e:ChangeEvent<HTMLInputElement | HTMLSelectElement>)=>{
     setShippingInfo((prev)=>({
-      ...prev , [e.target.name]: [e.target.value] 
+      ...prev , [e.target.name]: e.target.value  // Change "pincode" to "pinCode"
     }))
-   }
+  }
+  
   return (
     <div className="shipping">
       <button className="back-btn" onClick={()=>navigate("/Cart")}><BiArrowBack/></button>
@@ -73,7 +75,7 @@ export default function Shipping() {
         type="number"
         placeholder="Pincode" 
         name="pincode" 
-        value={shippingInfo.pinCode}
+        value={shippingInfo.pincode}
         onChange={changeHandler} />
 
         <button type="submit">Pay now</button>

@@ -1,13 +1,13 @@
 import { ReactElement, useEffect, useState } from "react";
-import TableHOC from "../Component/admin/TableHOC"
-import { Column } from "react-table";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { UserReducerInitialState } from "../types/reducer-types";
-import { useAllOrdersQuery } from "../redux/api/orderApi";
-import { CustomError } from "../types/api-types";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { Column } from "react-table";
 import { Skeleton } from "../Component/Loader";
+import TableHOC from "../Component/admin/TableHOC";
+import { useAllOrdersQuery } from "../redux/api/orderApi";
+import { RootState } from "../redux/store";
+import { CustomError } from "../types/api-types";
 
 type DataType = {
    _id: string;
@@ -60,7 +60,7 @@ export default function Order() {
   ]);
 
   const {user} =  useSelector(
-    (state : {userReducer : UserReducerInitialState}) => state.userReducer
+    (state : RootState) => state.userReducer
   );
 
   const {isLoading, isError,data,error,} = useAllOrdersQuery(user?._id!);

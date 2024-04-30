@@ -74,7 +74,7 @@ export type NewOrderTypes = {
   shippingCharges : number;
   discount : number;
   total : number;
-  shippinInfo : ShippingInfotype;
+  shippingInfo : ShippingInfotype;
   userId : string;
 };
 

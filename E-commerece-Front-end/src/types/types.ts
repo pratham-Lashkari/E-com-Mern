@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 export type User = {
   name : string;
   email : string;
@@ -59,5 +61,70 @@ export type Order = {
     _id : string;
   };
   _id:string;
+}
 
+type CountAndChange = {
+  revenues : number,
+  revenue?:number,
+  product : number,
+  user : number,
+  order : number,
+}
+type LatestTransaction = {
+  _id: string;
+  amount: number;
+  discount: number;
+  quantity: number;
+  status: string;
+}
+
+export type Stats = {
+  categoryCount : Record<string,number>[],
+  changePercent : CountAndChange,
+  count : CountAndChange,
+  chart : {
+    orderMonthCounts :number[],
+    orderMonthRevenue : number[]
+  }
+  useRatio : {
+    male : number,
+    female : number
+  };
+  modifiedLatestTransaction :LatestTransaction[]
+}
+
+
+type OrderFullFillment = {
+  processing: number;
+  shipped: number;
+  delivered: number;
+};
+type StockAvaliablity =  {
+  inStock: number;
+  outStock: number;
+};
+type RevenuseDistribution = {
+  netMargin: number;
+  discount: number;
+  productionCost: number;
+  burnt: number;
+  marketingCost: number;
+};
+export type AdminCustomer ={
+  user: number;
+  admin: number;
+};
+export type UserAgeGroup = {
+  teen: number;
+  adult: number;
+  old: number;
+};
+
+export type Pie = {
+  orderFullFillmentRation : OrderFullFillment;
+  productCategories : Record<string, number>[];
+  stockAvaliablity :StockAvaliablity;
+  revenueDistribution :RevenuseDistribution ;
+  adminCustomer :AdminCustomer;
+  userAgeGroup : UserAgeGroup;
 }

@@ -51,7 +51,7 @@ export const calculatePercentage =(thisMonth:number , lastMonth:number)=>{
     }
   
   const percent = (thisMonth  / lastMonth) * 100;
-  return percent.toFixed(0);
+  return percent;
 };
 
 

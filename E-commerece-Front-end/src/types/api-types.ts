@@ -1,8 +1,10 @@
 import { 
   CartItemsType, 
   Order, 
+  Pie, 
   Product, 
   ShippingInfotype, 
+  Stats, 
   User } from "./types";
 
 
@@ -106,4 +108,15 @@ export type OrderDetailsResponse = {
 
 export type AllUserResponse = {
   users : User[]
+}
+
+export type StatsResponse=  {
+  success : boolean,
+  stats : Stats
+}
+
+
+export type PieResponse=  {
+  success : boolean,
+  charts : Pie
 }

@@ -107,6 +107,7 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
       const revenues = allOrders.reduce(
         (total , order ) => total + (order.total || 0),0
       )
+      
       const thisMonthRevenue = thisMonthOrder.reduce(
         (total , order) => total + (order.total || 0),0
       );
@@ -127,10 +128,10 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
           revenue,
           product : calculatePercentage(
             thisMonthProduct.length , 
-            lastMonthProduct.length ),
-          user : calculatePercentage(
+            lastMonthProduct.length),
+          user :calculatePercentage(
               thisMonthUser.length , 
-              lastMonthUser.length ),
+              lastMonthUser.length),
           order :calculatePercentage(
             thisMonthOrder.length , 
             lastMonthOrder.length )
@@ -171,7 +172,7 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
             status : i.status 
           }));
 
-      stats = {
+        stats = {
         categoryCount,
         count,
         changePercent,
@@ -186,13 +187,14 @@ export const getDashboardStats = TryCatch(async(req,res,next)=>{
       myCache.set(key , JSON.stringify(stats));
 
     }
-    InvalidateCache({product  : true , admin : true});
+    InvalidateCache({product  : true , admin : true, order:true,key});
 
     return res.status(200).json({
       success : true,
       stats
     });
 });
+
 
 export const getPieCharts = TryCatch(async(req,res,next)=>{
   

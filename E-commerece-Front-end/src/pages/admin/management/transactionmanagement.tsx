@@ -1,15 +1,12 @@
-import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
-import AdminSidebar from "../../../Component/admin/AdminSidebar";
-import { server } from "../../../redux/store";
-import { Order, OrderItemsType } from "../../../types/types";
 import { useSelector } from "react-redux";
-import { UserReducerInitialState } from "../../../types/reducer-types";
-import { useDeleteOrderMutation, useOrdersDetailsQuery, useUpdateOrderMutation } from "../../../redux/api/orderApi";
-import { CustomError } from "../../../types/api-types";
-import toast from "react-hot-toast";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { Skeleton } from "../../../Component/Loader";
+import AdminSidebar from "../../../Component/admin/AdminSidebar";
+import { useDeleteOrderMutation, useOrdersDetailsQuery, useUpdateOrderMutation } from "../../../redux/api/orderApi";
+import { server } from "../../../redux/store";
+import { UserReducerInitialState } from "../../../types/reducer-types";
+import { Order, OrderItemsType } from "../../../types/types";
 import { resposneToast } from "../../../utils/freature";
 
 

@@ -105,5 +105,5 @@ export type OrderDetailsResponse = {
 };
 
 export type AllUserResponse = {
-  user : User[]
+  users : User[]
 }

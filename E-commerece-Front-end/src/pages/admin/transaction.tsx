@@ -3,12 +3,12 @@ import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Column } from "react-table";
+import { Skeleton } from "../../Component/Loader";
 import AdminSidebar from "../../Component/admin/AdminSidebar";
 import TableHOC from "../../Component/admin/TableHOC";
 import { useAllOrdersQuery } from "../../redux/api/orderApi";
+import { RootState } from "../../redux/store";
 import { CustomError } from "../../types/api-types";
-import { UserReducerInitialState } from "../../types/reducer-types";
-import { Skeleton } from "../../Component/Loader";
 
 interface DataType {
   user: string;
@@ -49,7 +49,7 @@ const columns: Column<DataType>[] = [
 const Transaction = () => {
 
   const {user} =  useSelector(
-    (state : {userReducer : UserReducerInitialState}) => state.userReducer
+    (state : RootState) => state.userReducer
   );
 
   const {isLoading, isError,data,error,} = useAllOrdersQuery(user?._id!);

@@ -18,7 +18,7 @@ function TableHOC<T extends Object>(
   showPagination: boolean = false
 ) {
   return function HOC() {
-    const options: TableOptions<T> = {
+    const options: TableOptions<T> =  {
       columns,
       data,
       initialState: {

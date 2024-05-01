@@ -128,3 +128,15 @@ export type Pie = {
   adminCustomer :AdminCustomer;
   userAgeGroup : UserAgeGroup;
 }
+
+
+export type Bar = {
+  users : number[];
+  products :  number[];
+  orders :  number[];
+}
+
+export type Line = Omit<Bar,"orders"> & {
+discount : number[];
+revenue : number[];
+}

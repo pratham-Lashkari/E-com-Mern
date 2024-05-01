@@ -5,19 +5,15 @@ import {
   ShippingInfotype, 
   User } from "./types";
 
-export interface MessageResponse {
-  success : boolean;
-  message : string;
-};;
 
-export type UserResponse = {
+  export type UserResponse = {
+    success : boolean;
+    user : User;
+ };;
+ export type AllProductResponse = {
    success : boolean;
-   user : User;
-};;
-export type AllProductResponse = {
-  success : boolean;
-  products : Product[];
-};;
+   products : Product[];
+ };;
 
 export type CustomError = {
     status : number;
@@ -67,6 +63,21 @@ export type DeleteProductRequest = {
   productId : string;
 };
 
+
+export type deleteUserRequest = {
+  userId : string
+  adminId : string
+}
+
+
+// All response types
+
+export interface MessageResponse {
+  success : boolean;
+  message : string;
+};
+
+
 export type NewOrderTypes = {
   orderItems : CartItemsType[];
   subTotal  :  number;
@@ -93,3 +104,6 @@ export type OrderDetailsResponse = {
   order : Order;
 };
 
+export type AllUserResponse = {
+  user : User[]
+}

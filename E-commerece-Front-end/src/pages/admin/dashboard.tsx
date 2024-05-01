@@ -26,10 +26,7 @@ const Dashboard = () => {
            const err = error as CustomError;
            toast.error(err.data.message);
         }
-
-        const stats =  data?.stats!;
-      console.log(stats)
-
+      const stats =  data?.stats!;
 
   return (
     <div className="admin-container">

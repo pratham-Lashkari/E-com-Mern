@@ -1,14 +1,35 @@
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import AdminSidebar from "../../../Component/admin/AdminSidebar";
 import { DoughnutChart, PieChart } from "../../../Component/admin/Charts";
-import data from "../../../assets/data.json";
+import { usePieQuery } from "../../../redux/api/dashboardApi";
+import { RootState } from "../../../redux/store";
+import { CustomError } from "../../../types/api-types";
+import { Skeleton } from "../../../Component/Loader";
+
 
 const PieCharts = () => {
+
+  const{user} = useSelector((state : RootState)=>state.userReducer);
+
+      const {isLoading , data, error , isError} =  usePieQuery(user?._id!);
+
+      if(isError)
+        { 
+           const err = error as CustomError;
+           toast.error(err.data.message);
+        }
+      const charts = data?.charts!;
+
   return (
     <div className="admin-container">
       <AdminSidebar />
       <main className="chart-container">
         <h1>Pie & Doughnut Charts</h1>
-        <section>
+        {
+          isLoading ? <Skeleton length={20}/> :
+          <>
+          <section>
           <div>
             <PieChart
               labels={["Processing", "Shipped", "Delivered"]}
@@ -27,9 +48,13 @@ const PieCharts = () => {
         <section>
           <div>
             <DoughnutChart
-              labels={data.categories.map((i) => i.heading)}
-              data={data.categories.map((i) => i.value)}
-              backgroundColor={data.categories.map(
+              labels={charts.productCategories.map(
+                (i) => Object.keys(i)[0]
+              )}
+              data={charts.productCategories.map(
+                (i) =>Object.values(i)[1]
+              )}
+              backgroundColor={charts.productCategories.map(
                 (i) => `hsl(${i.value * 4}, ${i.value}%, 50%)`
               )}
               legends={false}
@@ -108,6 +133,8 @@ const PieCharts = () => {
             />
           </div>
         </section>
+          </>
+        }
       </main>
     </div>
   );

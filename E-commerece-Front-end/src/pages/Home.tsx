@@ -6,6 +6,7 @@ import { Skeleton } from "../Component/Loader";
 import { CartItemsType } from "../types/types";
 import { useDispatch } from "react-redux";
 import { addToCartItems } from "../redux/reducer/cartReducer";
+import Carousels from "../Component/Home-Carousles";
 
 export default function Home(){
 
@@ -25,7 +26,9 @@ export default function Home(){
   
   return (
     <div className="home">
-      <section></section>
+      <section>
+      <Carousels/>
+      </section>
       <h1>
         Latest Products
         <Link to={"/search"} className="findmore">More</Link>

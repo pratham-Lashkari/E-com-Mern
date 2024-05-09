@@ -10,7 +10,7 @@ import sports from "../assets/Carousels/sports.png"
 
 const Carousels = () => {
   return (
-    <Carousel className='carousles'>
+    <Carousel className='carousles' interval={2000} infiniteLoop={true} autoPlay>
         <div>
             <img src={freeDeliver} />
         </div>
